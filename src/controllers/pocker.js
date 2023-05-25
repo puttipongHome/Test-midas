@@ -55,11 +55,17 @@ const pocker = {
 
 const clock = {
   onepatient: async (req, res) => {
-    const body = req.body;
-    console.log("🚀 ~ body:", body);
-    const time = body.time; // เพิ่มการกำหนดค่าตัวแปร time
-    console.log("🚀 ~ time:", time);
-    const results = "";
+    const body = req.body.text;
+    const time = body; // เพิ่มการกำหนดค่าตัวแปร time
+    const [hours, minutes] = time.split(":").map(Number);
+    const hourAngle = (hours % 12) * 30 + (minutes / 60) * 30;
+    const minuteAngle = (minutes / 60) * 360;
+    let angle = Math.abs(hourAngle - minuteAngle);
+    if (angle > 180) {
+      angle = 360 - angle;
+    }
+    console.log("🚀 ~ angle:", angle);
+    const results = angle;
     return res.status(200).json({ results });
   },
 };
