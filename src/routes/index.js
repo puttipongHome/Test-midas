@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
 
-router.use("/", require("../routes/pocker"));
+router.use("/", require("./pocker"));
 
 module.exports = router;
