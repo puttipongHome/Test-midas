@@ -2,59 +2,38 @@ const pockerService = require("../service/pocker");
 
 const pocker = {
   sum: async (req, res) => {
-    const hand = req.body;
+    const hand = req.body.text;
     const cards = hand.split(" ");
-    console.log("🚀 ~ hand:", hand);
-    let score = 0;
-    const suits = {
-      H: 0, // Hearts
-      C: 0, // Clubs
-      D: 0, // Diamonds
-      S: 0, // Spades
-    };
-    const ranks = {
-      A: 11,
-      2: 2,
-      3: 3,
-      4: 4,
-      5: 5,
-      6: 6,
-      7: 7,
-      8: 8,
-      9: 9,
-      J: 10,
-      Q: 10,
-      K: 10,
-    };
-    for (let card of cards) {
+    const score = { S: 0, C: 0, H: 0, D: 0 };
+    let Total = 0;
+    const inHand = [];
+    const evenA = (element) => element === "A";
+    const evenEight = (element) => element === "8";
+    const evenJ = (element) => element === "J";
+
+    for (let i = 0; i < cards.length; i++) {
+      const card = cards[i];
+      const rank = card.slice(1);
+      inHand.push(rank);
       const suit = card[0];
-      suits[suit]++;
-    }
-    for (let rank in ranks) {
-      if (ranks[rank] === 3) {
-        if (rank === "A") {
-          score = 35; // A-A-A
-        } else if (rank === "8" || rank === "J") {
-          score = 32.5; // Other ranks
-        }
-        break;
+
+      if (!isNaN(rank)) {
+        Total = Total + parseInt(rank) + score[suit];
+      } else if (rank === "A") {
+        Total = Total + 11;
+      } else if (rank === "J" || "Q" || "K") {
+        Total = Total + 10;
       }
     }
-    for (let suit in suits) {
-      if (suits[suit] === 3) {
-        score = suits[suit] * ranks[suit];
-        break;
-      }
+    if (inHand.every(evenA)) {
+      Total = 35;
+    } else if (inHand.every(evenEight)) {
+      Total = 32.5;
+    } else if (inHand.every(evenJ)) {
+      Total = 32.5;
     }
-    const results = score;
-    return res.status(200).json({ results: score });
-  },
-  delete: async (req, res) => {
-    let results = "delete";
-    return res.status(200).json({ results });
-  },
-  muti: async (req, res) => {
-    let results = "muti";
+
+    const results = Total;
     return res.status(200).json({ results });
   },
 };
@@ -78,33 +57,13 @@ const clock = {
 
 const substring = {
   sub: async (req, res) => {
-    // const body = req.body.text;
-    const body = ["BATHROOM", "BATH SALTS", "BLOODBATH"];
-    console.log("🚀 ~ body:", body);
-    console.log("🚀 ~ body:", typeof body);
-    const firstWord = body[0];
-    const questionPart = [];
-    for (let i = 0; i < firstWord.length; i++) {
-      let isMatched = true;
-      for (let j = 1; j < body.length; j++) {
-        const word = body[j];
-        if (!word.startsWith(firstWord.substring(0, i + 1))) {
-          isMatched = false;
-          break;
-        }
-      }
-      if (isMatched) {
-        questionPart.push(firstWord.substring(0, i + 1));
-      }
-    }
-    // if (words) {
-    //   const commonText = words[0];
-    //   console.log("🚀 ~ commonText:", commonText);
-    //   const data = words.map((word) => word.replace(commonText, ""));
-    //   console.log("🚀 ~ data:", data);
-    // }
-    console.log(questionPart);
-    const results = questionPart;
+    const body = req.body.text;
+    const subString = req.body.subString;
+    const words = body;
+    const commonText = subString;
+    const data = words.map((word) => word.replace(commonText, ""));
+    console.log("🚀 ~ data:", data);
+    const results = data;
     return res.status(200).json({ results });
   },
 };
